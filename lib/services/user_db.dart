@@ -29,7 +29,8 @@ class DatabaseHelper {
         name TEXT NOT NULL,
         email TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
-        role TEXT NOT NULL
+        role TEXT NOT NULL,
+        current_priority_list INTEGER
       )
     ''');
 
