@@ -11,13 +11,12 @@ import 'package:team_3_f25_project/screens/celebration_screen.dart';
 import 'package:record/record.dart';
 import 'dart:async';
 import 'package:path_provider/path_provider.dart';
-import 'package:team_3_f25_project/services/user_db.dart';
+import '../services/user_supabase.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:team_3_f25_project/data/homophones.dart';
-
+final db = SupabaseUserDB();
 class WordPracticeScreen extends StatefulWidget {
-  final db = DatabaseHelper.instance;
   WordPracticeScreen({super.key});
 
   @override
@@ -84,7 +83,7 @@ class _WordPracticeScreenState extends State<WordPracticeScreen> {
       wordsToPractice = completeWordList!.map((entry) => entry.word).toList();
 
       // find and remove words user has gotten correct in the past
-      Set<String> correctWords = await widget.db.getAllCorrectWords(userId!);
+      Set<String> correctWords = await db.getAllCorrectWords(userId!);
       wordsToPractice!.removeWhere((word) => correctWords.contains(word));
 
       // used for progress tracking
@@ -218,7 +217,7 @@ class _WordPracticeScreenState extends State<WordPracticeScreen> {
 
       userId ??= -1;
       // add attempt to database
-      widget.db.insertAttempt(
+      db.insertAttempt(
         Attempt(
           uid: userId!,
           wordText: currentWord,

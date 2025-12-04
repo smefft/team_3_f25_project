@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../services/user_db.dart';
 import '../models/user.dart';
 import 'package:uuid/uuid.dart';
+import '../services/user_supabase.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -28,27 +28,36 @@ class _SignupScreenState extends State<SignupScreen> {
     final name = _nameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
-    final db = DatabaseHelper.instance;
     String classCode;
 
-    // Basic required fields
     if (name.isEmpty || email.isEmpty || password.isEmpty) {
       setState(() => _error = "All fields are required.");
       return;
     }
 
-    // TEACHER → must enter a valid email
+    final db = SupabaseUserDB();
+
     if (_role == 'teacher') {
       if (!email.contains('@')) {
         setState(() => _error = "Teachers must enter a valid email.");
         return;
       }
+      classCode = generateClassCode();
+    } else {
+      classCode = _classCodeController.text.trim();
+      if (classCode.isEmpty) {
+        setState(() => _error = "Students must enter a class code.");
+        return;
+      }
+      if (!await db.classCodeExists(classCode)) {
+        setState(() => _error = "Invalid class code.");
+        return;
+      }
     }
 
-    // Check duplicates
     final existing = await db.getUserByEmail(email);
     if (existing != null) {
-      setState(() => _error = "Email/ID already registered.");
+      setState(() => _error = "Email already registered.");
       return;
     }
 
@@ -56,23 +65,7 @@ class _SignupScreenState extends State<SignupScreen> {
       setState(() => _error = "Password must be at least 8 characters.");
       return;
     }
-    if (_role == 'teacher') {
-      classCode = generateClassCode();
-    } else {
-      classCode = _classCodeController.text.trim();
-      final exists = await db.classCodeExists(classCode);
 
-      if (classCode.isEmpty) {
-        setState(() => _error = "Students must enter a class code.");
-        return;
-      }
-      if (!exists) {
-        setState(() => _error = "Students must enter a valid class code.");
-        return;
-      }
-    }
-
-    // Create user
     final newUser = AppUser(
       name: name,
       email: email,
@@ -81,10 +74,9 @@ class _SignupScreenState extends State<SignupScreen> {
       classCode: classCode,
     );
 
-    final insertedId = await db.insertUser(newUser);
-
-    if (insertedId <= 0) {
-      setState(() => _error = "Failed to create user. Please try again.");
+    final id = await db.insertUser(newUser);
+    if (id <= 0) {
+      setState(() => _error = "Signup failed.");
       return;
     }
 
@@ -110,13 +102,6 @@ class _SignupScreenState extends State<SignupScreen> {
                       color: Colors.blueAccent,
                     ),
                     onPressed: () => Navigator.pop(context),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.blueAccent),
-                    onPressed: () {
-                      final db = DatabaseHelper.instance;
-                      db.clearAllTables();
-                    },
                   ),
                 ],
               ),

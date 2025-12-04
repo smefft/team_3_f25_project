@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:team_3_f25_project/models/wordlist.dart';
 import 'package:team_3_f25_project/widgets/custom_app_bar.dart';
-import '../services/user_db.dart';
 import '../services/list_service.dart';
-
+import '../services/user_supabase.dart';
 class ProgressScreen extends StatefulWidget {
   final int listId; // which word list this progress screen shows
   const ProgressScreen({super.key, required this.listId});
@@ -14,7 +13,7 @@ class ProgressScreen extends StatefulWidget {
 }
 
 class _ProgressScreenState extends State<ProgressScreen> {
-  final db = DatabaseHelper.instance;
+  final db = SupabaseUserDB();
   SharedPreferences? prefs;
   int? userId;
   double completion = 0;
@@ -34,17 +33,12 @@ class _ProgressScreenState extends State<ProgressScreen> {
     prefs = await SharedPreferences.getInstance();
     userId = prefs!.getInt('userId');
     listCategory = await WordService.getCategory(widget.listId);
-    // list categories are in Dolch_<list-name> format
     listCategory = listCategory!.split('_')[1];
 
     final wordsInList = await WordService.getWords(widget.listId);
-    final allAttempts = await db.database.then((db) => db.query('attempts'));
 
-    // Get list of correctly scored words
-    final correctWords = allAttempts
-        .where((a) => a['score'] == 1 && a['uid'] == userId)
-        .map((a) => a['wordText'] as String)
-        .toSet();
+    final correctWordsData = await db.getAllCorrectWords(userId!);
+    final correctWords = correctWordsData;
 
     setState(() {
       words = wordsInList;
@@ -52,7 +46,6 @@ class _ProgressScreenState extends State<ProgressScreen> {
       masteredWords = words.where((w) => correctWords.contains(w.word)).length;
       completion = totalWords == 0 ? 0 : masteredWords / totalWords;
 
-      // Map each word to its progress state
       wordStatus = words.map((w) {
         bool correct = correctWords.contains(w.word);
         return {'word': w.word, 'status': correct ? 'mastered' : 'pending'};

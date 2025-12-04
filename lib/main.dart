@@ -6,11 +6,21 @@ import 'package:team_3_f25_project/screens/dashboard.dart';
 import 'package:team_3_f25_project/screens/wordlist_screen.dart';
 import 'package:team_3_f25_project/screens/word_practice_page.dart';
 import 'package:team_3_f25_project/screens/signup.dart';
-import 'package:team_3_f25_project/services/user_db.dart';
 import 'services/attempts_repository.dart';
 import 'models/progress_view_model.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../services/user_supabase.dart';
+const supabaseUrl = 'https://gelfwoihoznpghcpfylf.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlbGZ3b2lob3pucGdoY3BmeWxmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3OTc3MTUsImV4cCI6MjA4MDM3MzcxNX0.y8yPV32YatDe5VBE-u6pzfU0SmL9l2BnlW1NpIlfgVU';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: supabaseUrl,
+    anonKey: supabaseKey,
+  );
+
   final attemptsRepo = AttemptsRepository();
   runApp(
     ChangeNotifierProvider(
@@ -49,7 +59,8 @@ class _ReadRightAppState extends State<ReadRightApp> {
         currentListId = 1;
       }
       if (savedEmail != null) {
-        final user = await DatabaseHelper.instance.getUserByEmail(savedEmail);
+        final db = SupabaseUserDB();
+        final user = await db.getUserByEmail(savedEmail);
         if (user != null) {
           setState(
             () => _home = user.role == 'teacher'

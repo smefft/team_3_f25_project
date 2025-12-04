@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:team_3_f25_project/services/user_db.dart';
+import '../services/user_supabase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:team_3_f25_project/screens/login.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -38,9 +38,10 @@ class _MissedWordsScreenState extends State<MissedWordsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final db = SupabaseUserDB();
     final future = widget.uid != null
-        ? DatabaseHelper.instance.getMissedWordsByStudent(widget.uid!)
-        : DatabaseHelper.instance.getClassMissedWords(widget.classCode);
+        ? db.getMissedWordsByStudent(widget.uid!)
+        : db.getClassMissedWords(widget.classCode);
 
     return Scaffold(
       backgroundColor: Colors.blue[50],

@@ -2,10 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:team_3_f25_project/services/list_service.dart';
-import '../services/user_db.dart';
 import '../screens/dashboard.dart';
 import '../screens/wordlist_screen.dart';
 import '../screens/signup.dart';
+
+import '../services/user_supabase.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -26,7 +27,8 @@ class _LoginScreenState extends State<LoginScreen> {
       _error = null;
     });
 
-    final db = DatabaseHelper.instance;
+    final db = SupabaseUserDB();
+
     final user = await db.login(
       _emailController.text.trim().toLowerCase(),
       _passwordController.text.trim(),
@@ -34,34 +36,33 @@ class _LoginScreenState extends State<LoginScreen> {
 
     setState(() => _isLoading = false);
 
-    if (user != null) {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('email', user.email);
-      await prefs.setInt('userId', user.id!);
-      await prefs.setString('classCode', user.classCode ?? "");
-      if (user.role.toLowerCase() == 'student') {
-        // Get wordlist for students
-        int? currentListId = prefs.getInt('currentListId${user.id}');
-        if (currentListId == null) {
-          currentListId = await WordService.getTopPriority();
-          prefs.setInt('currentListId${user.id}', currentListId);
-        }
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => ProgressScreen(listId: currentListId!),
-          ),
-        );
-      } else if (user.role.toLowerCase() == 'teacher') {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const DashboardScreen()),
-        );
-      }
-    } else {
+    if (user == null) {
       setState(() => _error = "Invalid email or password");
+      return;
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('email', user.email);
+    await prefs.setInt('userId', user.id!);
+    await prefs.setString('classCode', user.classCode);
+
+    if (user.role == "student") {
+      int? listId = prefs.getInt('currentListId${user.id}');
+      listId ??= await WordService.getTopPriority();
+      prefs.setInt('currentListId${user.id}', listId);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => ProgressScreen(listId: listId!)),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const DashboardScreen()),
+      );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

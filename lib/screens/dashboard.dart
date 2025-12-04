@@ -4,13 +4,12 @@ import 'package:team_3_f25_project/services/list_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:team_3_f25_project/screens/login.dart';
 import '../models/user.dart';
-import '../services/user_db.dart';
 import 'missed_word.dart';
 import 'package:csv/csv.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:open_filex/open_filex.dart';
-
+import '../services/user_supabase.dart';
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -34,7 +33,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Future<void> _loadProgress() async {
-    final db = DatabaseHelper.instance;
+    final db = SupabaseUserDB();
     Map<int, double> temp = {};
 
     for (var s in students) {
@@ -57,7 +56,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Future<void> _loadStudents(String code) async {
-    final db = DatabaseHelper.instance;
+    final db = SupabaseUserDB();
     final list = await db.getStudentsByClassCode(code);
     List<Student> studentList = [];
     for (int i = 0; i < list.length; i++) {
@@ -133,7 +132,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   //This function is the export function to export student progress to CSV
   //CSV include email, name, progress, and most missed word
   Future<void> _exportCSV() async {
-    final db = DatabaseHelper.instance;
+    final db = SupabaseUserDB();
 
     List<List<dynamic>> rows = [
       ["Student Email", "Student Name", "Progress (%)", "Most Missed Word"],
