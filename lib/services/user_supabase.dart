@@ -6,17 +6,16 @@ import 'list_service.dart';
 class SupabaseUserDB {
   final supabase = Supabase.instance.client;
 
-
   Future<int> insertUser(AppUser user) async {
     final response = await supabase
         .from('users')
         .insert({
-      'name': user.name,
-      'email': user.email,
-      'password': user.password,
-      'role': user.role,
-      'classCode': user.classCode,
-    })
+          'name': user.name,
+          'email': user.email,
+          'password': user.password,
+          'role': user.role,
+          'classCode': user.classCode,
+        })
         .select()
         .single();
 
@@ -77,6 +76,21 @@ class SupabaseUserDB {
     return AppUser.fromMap(data);
   }
 
+  Future<int> addUserListId(String email, int currentListId) async {
+    final response = await supabase
+        .from('currentList')
+        .insert({'email': email, 'currentListId': currentListId})
+        .select()
+        .single();
+    return response['id'] as int;
+  }
+
+  Future<void> updateUserListId(String email, int nextListId) async {
+    final response = await supabase
+        .from('currentList')
+        .update({'currentListId': nextListId})
+        .eq('email', email);
+  }
 
   Future<int> insertAttempt(Attempt attempt) async {
     final response = await supabase
@@ -111,31 +125,40 @@ class SupabaseUserDB {
         .eq('score', 1)
         .eq('listId', currentListId);
 
-    final mastered = attempts.map<String>((a) => a['wordText'] as String).toSet();
+    final mastered = attempts
+        .map<String>((a) => a['wordText'] as String)
+        .toSet();
 
     return mastered.length / listLength;
   }
 
   Future<List<Map<String, dynamic>>> getMissedWordsByStudent(int uid) async {
-    final result = await supabase.rpc('get_missed_words_by_student', params: {'user_id': uid});
+    final result = await supabase.rpc(
+      'get_missed_words_by_student',
+      params: {'user_id': uid},
+    );
     return List<Map<String, dynamic>>.from(result);
   }
 
-  Future<List<Map<String, dynamic>>> getClassMissedWords(String classCode) async {
-    final result = await supabase.rpc('get_class_missed_words', params: {'class_code': classCode});
+  Future<List<Map<String, dynamic>>> getClassMissedWords(
+    String classCode,
+  ) async {
+    final result = await supabase.rpc(
+      'get_class_missed_words',
+      params: {'class_code': classCode},
+    );
     return List<Map<String, dynamic>>.from(result);
   }
 
   Future<String?> getMostMissedWord(int uid) async {
-    final result = await supabase
-        .rpc('get_most_missed_word', params: {'user_id': uid});
+    final result = await supabase.rpc(
+      'get_most_missed_word',
+      params: {'user_id': uid},
+    );
 
     if (result.isEmpty) return "No Words Missed";
     return result.first['wordText'] as String?;
   }
-
-
-
 
   Future<void> clearAllUsers() async {
     await supabase.from('users').delete();

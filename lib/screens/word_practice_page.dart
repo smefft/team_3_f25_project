@@ -15,7 +15,9 @@ import '../services/user_supabase.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:team_3_f25_project/data/homophones.dart';
+
 final db = SupabaseUserDB();
+
 class WordPracticeScreen extends StatefulWidget {
   WordPracticeScreen({super.key});
 
@@ -127,9 +129,12 @@ class _WordPracticeScreenState extends State<WordPracticeScreen> {
     }
   }
 
-  void _finishList() {
-    int nextListId = currentListId! + 1 % 5;
-    prefs!.setInt('currentListId$userId', nextListId);
+  void _finishList() async {
+    // get next highest priority with list service
+    int nextListId = await WordService.getNextListID(currentListId!) ?? 1;
+
+    // update database
+    await db.updateUserListId(userId as String, nextListId);
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:team_3_f25_project/services/list_service.dart';
 import '../models/user.dart';
 import 'package:uuid/uuid.dart';
 import '../services/user_supabase.dart';
@@ -52,6 +53,17 @@ class _SignupScreenState extends State<SignupScreen> {
 
     final db = SupabaseUserDB();
 
+    final existing = await db.getUserByEmail(email);
+    if (existing != null) {
+      setState(() => _error = "Email already registered.");
+      return;
+    }
+
+    if (password.length < 8) {
+      setState(() => _error = "Password must be at least 8 characters.");
+      return;
+    }
+
     if (_role == 'teacher') {
       if (!email.contains('@')) {
         setState(() => _error = "Teachers must enter a valid email.");
@@ -70,17 +82,6 @@ class _SignupScreenState extends State<SignupScreen> {
       }
     }
 
-    final existing = await db.getUserByEmail(email);
-    if (existing != null) {
-      setState(() => _error = "Email already registered.");
-      return;
-    }
-
-    if (password.length < 8) {
-      setState(() => _error = "Password must be at least 8 characters.");
-      return;
-    }
-
     final newUser = AppUser(
       name: name,
       email: email,
@@ -95,6 +96,11 @@ class _SignupScreenState extends State<SignupScreen> {
       return;
     }
 
+    if (_role == "student") {
+      int firstListId = await WordService.getTopPriority();
+      int id = await db.addUserListId(email, firstListId);
+      if (id <= 0) setState(() => _error = "Adding user list ID failed");
+    }
     if (mounted) Navigator.pop(context);
   }
 
