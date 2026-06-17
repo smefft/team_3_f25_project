@@ -1,11 +1,11 @@
-<img width="1179" height="2556" alt="Simulator Screenshot - iPhone 15 Pro - 2025-12-09 at 10 53 00" src="https://github.com/user-attachments/assets/2b874e79-32d0-433c-bcea-e1ed230a4919" />
-<img width="1179" height="2556" alt="Simulator Screenshot - iPhone 15 Pro - 2025-12-09 at 10 52 41" src="https://github.com/user-attachments/assets/156d7a4d-94cd-41da-bb46-6199bb4567bf" />
-<img width="1179" height="2556" alt="Simulator Screenshot - iPhone 15 Pro - 2025-12-09 at 10 52 11" src="https://github.com/user-attachments/assets/25b707ca-0bef-4ce3-8fe1-661f86c8a773" />
-<img width="1179" height="2556" alt="Simulator Screenshot - iPhone 15 Pro - 2025-12-09 at 10 40 09" src="https://github.com/user-attachments/assets/1e2cbfd1-0f2a-47cd-902b-3035421193c8" />
-<img width="1179" height="2556" alt="Simulator Screenshot - iPhone 15 Pro - 2025-12-09 at 10 33 57" src="https://github.com/user-attachments/assets/113f3ced-f7f2-4e58-bf78-ee26b31adc17" />
-<img width="1179" height="2556" alt="Simulator Screenshot - iPhone 15 Pro - 2025-12-09 at 10 33 28" src="https://github.com/user-attachments/assets/e58e1765-dc1e-4e2a-9010-cae0c943508f" />
-<img width="1179" height="2556" alt="Simulator Screenshot - iPhone 15 Pro - 2025-12-09 at 10 33 19" src="https://github.com/user-attachments/assets/6d08d4a1-98e6-48c0-91b2-dcdaa76f1398" />
-<img width="1179" height="2556" alt="Simulator Screenshot - iPhone 15 Pro - 2025-12-09 at 10 33 03" src="https://github.com/user-attachments/assets/7452263e-90e7-4532-ac88-a74a9201bf8f" />
+<img width="250" height="540" alt="Simulator Screenshot - iPhone 15 Pro - 2025-12-09 at 10 53 00" src="https://github.com/user-attachments/assets/2b874e79-32d0-433c-bcea-e1ed230a4919" />
+<img width="250" height="540" alt="Simulator Screenshot - iPhone 15 Pro - 2025-12-09 at 10 52 41" src="https://github.com/user-attachments/assets/156d7a4d-94cd-41da-bb46-6199bb4567bf" />
+<img width="250" height="540" alt="Simulator Screenshot - iPhone 15 Pro - 2025-12-09 at 10 52 11" src="https://github.com/user-attachments/assets/25b707ca-0bef-4ce3-8fe1-661f86c8a773" />
+<img width="250" height="540" alt="Simulator Screenshot - iPhone 15 Pro - 2025-12-09 at 10 40 09" src="https://github.com/user-attachments/assets/1e2cbfd1-0f2a-47cd-902b-3035421193c8" />
+<img width="250" height="540" alt="Simulator Screenshot - iPhone 15 Pro - 2025-12-09 at 10 33 57" src="https://github.com/user-attachments/assets/113f3ced-f7f2-4e58-bf78-ee26b31adc17" />
+<img width="250" height="540" alt="Simulator Screenshot - iPhone 15 Pro - 2025-12-09 at 10 33 28" src="https://github.com/user-attachments/assets/e58e1765-dc1e-4e2a-9010-cae0c943508f" />
+<img width="250" height="540" alt="Simulator Screenshot - iPhone 15 Pro - 2025-12-09 at 10 33 19" src="https://github.com/user-attachments/assets/6d08d4a1-98e6-48c0-91b2-dcdaa76f1398" />
+<img width="250" height="540" alt="Simulator Screenshot - iPhone 15 Pro - 2025-12-09 at 10 33 03" src="https://github.com/user-attachments/assets/7452263e-90e7-4532-ac88-a74a9201bf8f" />
 
 
 # Milestone 0
